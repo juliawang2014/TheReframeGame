@@ -1,0 +1,103 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://assets/Fonts/Word.tres" type="DynamicFont" id=1]
+[ext_resource path="res://data/Text/Sentence.gd" type="Script" id=2]
+[ext_resource path="res://data/Text/PlainWord.tscn" type="PackedScene" id=3]
+[ext_resource path="res://data/Text/Placement.tscn" type="PackedScene" id=4]
+[ext_resource path="res://data/Text/Word.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/Sounds/Music/6_Vibraphone.wav" type="AudioStream" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="Animation" id=1]
+resource_name = "pulse"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 1 ),
+"transitions": PoolRealArray( 3.13834, 1, 0.217638 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
+[node name="Sentence" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Think" type="ToolButton" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -83.4852
+margin_top = -180.492
+margin_right = 66.5148
+margin_bottom = -116.492
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 6 )
+custom_fonts/font = ExtResource( 1 )
+text = "Think"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonSFX" type="AudioStreamPlayer" parent="Think"]
+stream = ExtResource( 6 )
+bus = "SFX"
+
+[node name="Parts" type="Node2D" parent="."]
+
+[node name="Places" type="Node2D" parent="Parts"]
+
+[node name="Placement" parent="Parts/Places" instance=ExtResource( 4 )]
+position = Vector2( 329.512, 411.536 )
+
+[node name="PlainWord" parent="Parts" instance=ExtResource( 3 )]
+margin_left = 69.2964
+margin_top = 381.838
+margin_right = 269.296
+margin_bottom = 441.838
+
+[node name="Word" parent="Parts" instance=ExtResource( 5 )]
+position = Vector2( 270.988, 382.394 )
+value = 2
+
+[node name="Pulse" type="Node2D" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+position = Vector2( 190.882, 245.61 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Pulse"]
+margin_right = 622.0
+margin_bottom = 69.0
+mouse_filter = 2
+custom_fonts/normal_font = ExtResource( 1 )
+bbcode_enabled = true
+bbcode_text = "That doesn't make sense..."
+text = "That doesn't make sense..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Pulse"]
+anims/pulse = SubResource( 1 )
+[connection signal="pressed" from="Think" to="." method="_on_Think_pressed"]

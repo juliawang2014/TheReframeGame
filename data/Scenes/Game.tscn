@@ -1,0 +1,126 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://assets/Background/BG.png" type="Texture" id=1]
+[ext_resource path="res://assets/Background/clouds.png" type="Texture" id=2]
+[ext_resource path="res://data/Actors/Husk.tscn" type="PackedScene" id=3]
+[ext_resource path="res://data/Scenes/Game.gd" type="Script" id=4]
+[ext_resource path="res://data/UI/GUI.tscn" type="PackedScene" id=5]
+[ext_resource path="res://data/UI/Camera2D.tscn" type="PackedScene" id=6]
+[ext_resource path="res://shaders/vignette.shader" type="Shader" id=7]
+[ext_resource path="res://assets/Background/vignette.png" type="Texture" id=8]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 7 )
+shader_param/vignette = ExtResource( 8 )
+
+[sub_resource type="Animation" id=3]
+tracks/0/type = "value"
+tracks/0/path = NodePath("LeftCloud:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 14.9285 ),
+"update": 0,
+"values": [ Vector2( -168, 360 ), Vector2( 192, 360 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("RightCloud:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 19.6983 ),
+"update": 0,
+"values": [ Vector2( 1200, 360 ), Vector2( 800, 360 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("LowerClouds:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[node name="Game" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+self_modulate = Color( 0.266667, 0.266667, 0.266667, 1 )
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+stretch_mode = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="CanvasLayer/TextureRect"]
+
+[node name="Husk" parent="." instance=ExtResource( 3 )]
+position = Vector2( 488, 432 )
+
+[node name="Effect" type="CanvasLayer" parent="."]
+
+[node name="Vignette" type="TextureRect" parent="Effect"]
+modulate = Color( 1, 1, 1, 0 )
+material = SubResource( 1 )
+margin_right = 1024.0
+margin_bottom = 600.0
+mouse_filter = 2
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="Effect/Vignette"]
+
+[node name="Clouds" type="Node2D" parent="."]
+
+[node name="RightCloud" type="Sprite" parent="Clouds"]
+modulate = Color( 1, 1, 1, 0.698039 )
+position = Vector2( 1200, 360 )
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 576, -8, 448, 328 )
+
+[node name="LeftCloud" type="Sprite" parent="Clouds"]
+self_modulate = Color( 1, 1, 1, 0.54902 )
+position = Vector2( -168, 360 )
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 0, -16, 384, 328 )
+
+[node name="LowerClouds" type="Sprite" parent="Clouds"]
+modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 1, 1, 1, 0.776471 )
+position = Vector2( 512, 464 )
+texture = ExtResource( 2 )
+region_enabled = true
+region_rect = Rect2( 0, 328.335, 1024, 271.665 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Clouds"]
+autoplay = "move"
+anims/move = SubResource( 3 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="Camera2D" parent="." instance=ExtResource( 6 )]
+
+[node name="GUI" parent="." instance=ExtResource( 5 )]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
